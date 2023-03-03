@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <title>Whoopz @RepProject</title>
+        <link rel=”icon” href=https://i.ibb.co/Z8S1jpH/projectreppp.png>
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Roboto:300');
+            body {
+            background: #101;
+            text-align: center;
+            color: #fff;
+            font-size: 32px;
+            font-family: 'Roboto',Arial;
+            font-weight: 300;
+            color: #bbc;
+            background-size: auto;
+            background-repeat: no-repeat;
+            }
+
+            div {
+                position: relative;
+                height: calc( 100vh - 60px);
+                transform: translateY(50%);
+            }
+
+            span {
+            display: inline-block;
+            transition: all ease 0.9s;
+            opacity: 0;
+            min-width: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <div>Hacked by Rep</div>
+       
+    </body>
+    <script>
+        function _(x) {
+  return document.querySelectorAll(x);
+}
+
+function r(min=0,max=0) {
+  return min + Math.round(Math.random() * (max-min));
+}
+
+//wrap each letter with <span>
+_('div')[0].innerHTML = ('<span>' +  _('div')[0].innerHTML.trim().split('').join('</span><span>') + '</span>');
+
+var frame = 0;
+
+setInterval(function() {
+    if(frame%4==0)
+    for(var i = 0; i < _('span').length; i++)
+    {
+      _('span')[i].style.opacity = 0;
+      _('span')[i].style.color = '#' + r(3,9) + r(3,9) + r(3,9);
+      _('span')[i].style.transform = 'translate3d(' + r(-150) + 'px, ' + r(-150) + 'px, 0px) rotate(' + r(-30,30) + 'deg)';
+    }
+  
+    else if(frame%4==3)
+    for(var i = 0; i < _('span').length; i++)
+    {
+      _('span')[i].style.opacity = 0;
+      _('span')[i].style.transform = 'translate3d(' + r(150) + 'px, ' + r(150) + 'px, 0px) rotate(' + r(-30,30) + 'deg)';
+    }
+  
+    else 
+    for(var i = 0; i < _('span').length; i++)
+    {
+      _('span')[i].style.transform = '';
+      _('span')[i].style.opacity = 1;
+    }
+    frame++;
+}, 1050); 
+    </script>
+</html>
