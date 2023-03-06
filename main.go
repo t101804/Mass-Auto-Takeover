@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -90,11 +91,16 @@ func createRepo(domain string) {
 		fmt.Println(err)
 		return
 	}
+	body, _ := io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
 	// Check the response status code
 	if resp.StatusCode != http.StatusCreated {
-		fmt.Println("cant create a repo")
+		fmt.Println("cant create a repo", resp.StatusCode, string(body))
+		if strings.Contains(string(body), "You have exceeded a secondary rate limit") {
+			fmt.Println("got limit bro you account github ")
+			os.Exit(1)
+		}
 		return
 	}
 
@@ -250,7 +256,7 @@ func Cname(username string, repo string, domain string) {
 	result_tg = append(result_tg, domain)
 }
 
-const telegramBotToken = "5906773207:AAGxqBPEoAiL2t1PEN3bHeL6_PaoiZdo-NI"
+const telegramBotToken = "5906773207:AAGdCFNi_xOLTV8TZZHt1j4jM16pvlVQ4Fo"
 const telegramApiUrl = "https://api.telegram.org/bot"
 
 type sendMessageRequestBody struct {
@@ -297,6 +303,29 @@ func main() {
 	for scanner.Scan() {
 		// Process the current line
 		line := scanner.Text()
+		if !strings.HasPrefix(line, "http://") {
+			line = "http://" + line
+		}
+		resp, err := http.Get(line)
+		if err != nil {
+			fmt.Println("cant access the sites : ", line, err)
+			return
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode >= 300 && resp.StatusCode <= 399 {
+			resp, err := resp.Location()
+			if err != nil {
+				fmt.Println("cant get access the redirected sites : ", resp)
+				return
+			}
+			fmt.Println("Redirected to:", resp.String())
+			line = resp.String()
+		} else {
+			fmt.Println("Not redirected")
+		}
+		line = strings.TrimPrefix(line, "http://")
+		line = strings.TrimPrefix(line, "https://")
 		createRepo(line)
 	}
 	if err := scanner.Err(); err != nil {
